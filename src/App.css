@@ -21,3 +21,15 @@
 .App-test {
   border: 1px red solid;
 }
+
+.Map-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 20px;
+}
+
+.Map{
+  width: 500px;
+  height: 100px;
+}
