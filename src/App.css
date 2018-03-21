@@ -30,6 +30,12 @@
 }
 
 .Map{
-  width: 500px;
-  height: 100px;
+  width: 800px;
+  height: 800px;
+}
+
+.Map-Filter{
+  background-color: white;
+  width: 200px;
+  height:800px;
 }

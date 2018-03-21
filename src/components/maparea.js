@@ -1,14 +1,15 @@
 import React from 'react';
 import '../App.css';
 import Map from './map.js';
+import MapFilter from './mapfilter.js';
 
-const maparea = () => {
+const MapArea = () => {
 	return(
 		<div className='Map-area'>
-            <p>Map Area</p>
+            <MapFilter/>
             <Map/>
 		</div>
 	);
 }
 
-export default maparea;
+export default MapArea;

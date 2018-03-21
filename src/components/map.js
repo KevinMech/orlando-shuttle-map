@@ -18,7 +18,7 @@ class MapBox extends React.Component{
     render() {
         return(
             <div className='Map'>
-                <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '500px', width: '100%'}}/>
+                <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}}/>
             </div>
         );
     }
