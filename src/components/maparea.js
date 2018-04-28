@@ -6,8 +6,8 @@ import MapFilter from './mapfilter.js';
 const MapArea = () => {
 	return(
 		<div className='Map-area'>
-            <MapFilter/>
-            <Map/>
+            	<MapFilter/>
+            	<Map/>
 		</div>
 	);
 }
