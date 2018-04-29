@@ -10,7 +10,9 @@ const Map = ReactMapBoxGl({
 const MapBox = () => {
     return(
         <div className='Map'>
-            <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}} center={[-81.37923649999999, 28.5383355]} zoom={[11]}/>
+            <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}} center={[-81.37923649999999, 28.5383355]} zoom={[11]}>
+                <ZoomControl/>
+            </Map>
         </div>
     );
 }
