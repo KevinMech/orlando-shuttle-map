@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './config/busroutes.json';
 import Header from './components/header.js';
 import MapArea from './components/maparea.js';
 

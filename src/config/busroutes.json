@@ -1,0 +1,24 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "Name": "Route 13"
+        },
+        "geometry": {
+          "type": "MultiPoint",
+          "coordinates": [
+            [
+              -81.19093559682369,
+              28.612872530295824
+            ],
+            [
+              -81.19724616408348,
+              28.603073216703063
+            ]
+          ]
+        }
+      }
+    ]
+  }
