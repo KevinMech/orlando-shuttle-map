@@ -3,11 +3,11 @@ import '../App.css';
 import Map from './map.js';
 import MapFilter from './mapfilter.js';
 
-const MapArea = () => {
+const MapArea = (props) => {
 	return(
 		<div className='Map-area'>
             	<MapFilter/>
-            	<Map/>
+            	<Map routes={props.routes}/>
 		</div>
 	);
 }
