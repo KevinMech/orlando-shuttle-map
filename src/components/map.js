@@ -12,8 +12,11 @@ const MapBox = (props) => {
         <div className='Map'>
             <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}} center={[-81.37923649999999, 28.5383355]} zoom={[11]}>
                 <ZoomControl/>
-                    <Layer type="symbol" id="marker" layout={{ "icon-image": "bus-15" }}>
-                    {props.busstops}
+                    <Layer type='symbol' id='marker' layout={{ 'icon-image': 'bus-15' }}>
+                        {props.busstops}
+                    </Layer>
+                    <Layer type='line'>
+                        {props.busroutes}
                     </Layer>
             </Map>
         </div>

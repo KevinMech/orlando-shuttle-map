@@ -7,7 +7,7 @@ const MapArea = (props) => {
 	return(
 		<div className='Map-area'>
             	<MapFilter/>
-            	<Map busstops={props.busstops}/>
+            	<Map busstops={props.busstops} busroutes={props.busroutes}/>
 		</div>
 	);
 }
