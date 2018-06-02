@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import ReactMapBoxGl, {Feature} from 'react-mapbox-gl';
 import './App.css';
-import './config/busroutes.json';
+import busroutes from './config/busroutes.json';
 import Header from './components/header.js';
 import MapArea from './components/maparea.js';
 
@@ -10,14 +10,32 @@ class App extends Component {
     super(props);
 
     this.state = {
-      routes: [{name: "Route 13", stops: [-81.19093559682369, 28.612872530295824]}]
+      routes: busroutes.features,
+      busstops: []
     }
   }
+
+  componentDidMount(){
+    this.generateBusStops();
+  }
+
+  generateBusStops(){
+    let stops = [];
+    for(let x = 0; x < this.state.routes.length; x++){
+      if(this.state.routes[x].geometry.type === 'MultiPoint'){
+        for(let y = 0; y < this.state.routes[x].geometry.coordinates.length; y++){
+          stops.push(<Feature coordinates={this.state.routes[x].geometry.coordinates[y]} properties={this.state.routes[x].properties.name}/>);
+        }
+      }
+    }
+    this.setState({busstops: stops});
+  }
+
   render() {
     return (
       <div className="App">
         <Header/>
-        <MapArea routes={this.state.routes}/>
+        <MapArea busstops={this.state.busstops}/>
       </div>
     );
   }

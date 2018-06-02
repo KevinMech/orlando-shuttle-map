@@ -4,7 +4,7 @@
       {
         "type": "Feature",
         "properties": {
-          "Name": "Route 13"
+          "name": "Route 13"
         },
         "geometry": {
           "type": "MultiPoint",
