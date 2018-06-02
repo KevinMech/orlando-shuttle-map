@@ -10,8 +10,8 @@ class App extends Component {
     super(props);
 
     this.state = {
-      routes: busroutes.features,
-      busstops: []
+      busstops: [],
+      routes: []
     }
   }
 
@@ -20,11 +20,15 @@ class App extends Component {
   }
 
   generateBusStops(){
+    const features = busroutes.features;
+
+    let id = 0;
     let stops = [];
-    for(let x = 0; x < this.state.routes.length; x++){
-      if(this.state.routes[x].geometry.type === 'MultiPoint'){
-        for(let y = 0; y < this.state.routes[x].geometry.coordinates.length; y++){
-          stops.push(<Feature coordinates={this.state.routes[x].geometry.coordinates[y]} properties={this.state.routes[x].properties.name}/>);
+    for(let x = 0; x < features.length; x++){
+      if(features[x].geometry.type === 'MultiPoint'){
+        for(let y = 0; y < features[x].geometry.coordinates.length; y++){
+          stops.push(<Feature key={id} properties={features[x].properties.name} coordinates={features[x].geometry.coordinates[y]}/>);
+          id++;
         }
       }
     }
