@@ -1,26 +1,29 @@
-import React from 'react';
+import React, {Component} from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import '../App.css';
-import ReactMapBoxGl, {ZoomControl, Layer, Feature} from 'react-mapbox-gl';
 import Token from '../tokens.json';
 
-const Map = ReactMapBoxGl({
-    accessToken: Token.mapbox
-});
+mapboxgl.accessToken = Token.mapbox;
 
-const MapBox = (props) => {
-    return(
-        <div className='Map'>
-            <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}} center={[-81.37923649999999, 28.5383355]} zoom={[11]}>
-                <ZoomControl/>
-                    <Layer type='symbol' id='marker' layout={{ 'icon-image': 'bus-15' }}>
-                        {props.busstops}
-                    </Layer>
-                    <Layer type='line'>
-                        {props.busroutes}
-                    </Layer>
-            </Map>
-        </div>
-    );
+class Map extends Component{
+    constructor(props){
+        super(props);
+    }
+    
+    componentDidMount(){
+        const map = new mapboxgl.Map({
+            container: this.mapContainer,
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: this.props.center,
+            zoom: this.props.zoom
+        });
+        
+    }
+
+    render(){
+        return <div className='Map' ref={el => this.mapContainer = el}/>;
+    }
 }
 
-export default MapBox;
+export default Map;
