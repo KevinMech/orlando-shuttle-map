@@ -10,8 +10,10 @@ class App extends Component {
     super(props);
 
     this.state = {
+      lnglat: [-81.37923649999999, 28.5383355],
+      zoom: 15,
       busstops: [],
-      routes: []
+      busroutes: []
     }
 
     //Enum for our generateRenderedElements function
@@ -19,13 +21,13 @@ class App extends Component {
       BusStops: 'MultiPoint',
       BusRoutes: 'LineString'
     }
-
   }
 
   componentDidMount(){
     this.generateRenderedElements(this.Generate.BusStops);
   }
 
+  
   //Generate all the Rendered DOM elements such as bus stops and bus routes that will appear on the map
   generateRenderedElements(){
     const features = busroutes.features;
@@ -51,14 +53,13 @@ class App extends Component {
       busstops: stops,
       busroutes: routes
     });
-    console.log(this.state.stops);
   }
 
   render() {
     return (
       <div className="App">
         <Header/>
-        <MapArea busstops={this.state.busstops} busroutes={this.state.busroutes}/>
+        <MapArea lnglat={this.state.lnglat} zoom={this.state.zoom} busstops={this.state.busstops} busroutes={this.state.busroutes}/>
       </div>
     );
   }

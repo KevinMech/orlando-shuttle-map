@@ -7,7 +7,7 @@ const MapArea = (props) => {
 	return(
 		<div className='Map-area'>
             	<MapFilter/>
-            	<Map center={[-81.37923649999999, 28.5383355]} zoom={15} busstops={props.busstops} busroutes={props.busroutes}/>
+            	<Map lnglat={props.lnglat} zoom={props.zoom} busstops={props.busstops} busroutes={props.busroutes}/>
 		</div>
 	);
 }
