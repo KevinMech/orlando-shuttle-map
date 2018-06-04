@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../App.css';
-import Token from '../tokens.json';
+import token from '../tokens.json';
+import route13 from '../config/route13.json';
 
-mapboxgl.accessToken = Token.mapbox;
+mapboxgl.accessToken = token.mapbox;
 
 class Map extends Component{
     constructor(props){
@@ -18,6 +19,33 @@ class Map extends Component{
             center: this.props.lnglat,
             zoom: this.props.zoom
         });
+        
+        map.addControl(new mapboxgl.NavigationControl());
+        
+        map.on('load', () =>{
+            map.addSource('route13', {type: 'geojson',data: route13 });
+            map.addLayer({
+                'id': 'stops',
+                'type': 'symbol',
+                'source': 'route13',
+                "layout": {
+                    "icon-image": "bus-15"
+                }
+            });
+            map.addLayer({
+                'id': 'routes',
+                'type': 'line',
+                'source': 'route13',
+                "layout": {
+                    "line-join": "round",
+                    "line-cap": "round"
+                },
+                "paint": {
+                    "line-color": "#FF0000",
+                    "line-width": 2
+                }
+            });
+        });
 
         map.on('move', () =>{
             let coord = map.getCenter();
@@ -30,8 +58,8 @@ class Map extends Component{
             this.setState({
                 zoom: map.getZoom()
             });
-            console.log(this.state.zoom);
         });
+
     }
 
     render(){
