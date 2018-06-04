@@ -8,31 +8,41 @@ import route13 from '../config/route13.json';
 mapboxgl.accessToken = token.mapbox;
 
 class Map extends Component{
-    constructor(props){
-        super(props);
-    }
-    
     componentDidMount(){
         const map = new mapboxgl.Map({
             container: this.mapContainer,
             style: 'mapbox://styles/mapbox/streets-v10',
             center: this.props.lnglat,
             zoom: this.props.zoom
+        })
+        .addControl(new mapboxgl.NavigationControl())
+        .on('load', () =>{
+            this.generateLayers(map);
+        })
+        .on('move', () =>{
+            let coord = map.getCenter();
+            this.setState({
+                lnglat: [coord.lng, coord.lat]
+            });
+        })
+        .on('zoom', () =>{
+            this.setState({
+                zoom: map.getZoom()
+            });
         });
-        
-        map.addControl(new mapboxgl.NavigationControl());
-        
-        map.on('load', () =>{
-            map.addSource('route13', {type: 'geojson',data: route13 });
-            map.addLayer({
+    }
+
+    generateLayers(map){
+        map.addSource('route13', {type: 'geojson',data: route13 })
+        .addLayer({
                 'id': 'stops',
                 'type': 'symbol',
                 'source': 'route13',
                 "layout": {
                     "icon-image": "bus-15"
                 }
-            });
-            map.addLayer({
+        })
+        .addLayer({
                 'id': 'routes',
                 'type': 'line',
                 'source': 'route13',
@@ -44,22 +54,7 @@ class Map extends Component{
                     "line-color": "#FF0000",
                     "line-width": 2
                 }
-            });
         });
-
-        map.on('move', () =>{
-            let coord = map.getCenter();
-            this.setState({
-                lnglat: [coord.lng, coord.lat]
-            });
-        });
-
-        map.on('zoom', () =>{
-            this.setState({
-                zoom: map.getZoom()
-            });
-        });
-
     }
 
     render(){
