@@ -1,26 +1,65 @@
-import React from 'react';
+import React, {Component} from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import '../App.css';
-import ReactMapBoxGl, {ZoomControl, Layer, Feature} from 'react-mapbox-gl';
-import Token from '../tokens.json';
+import token from '../tokens.json';
+import route13 from '../config/route13.json';
 
-const Map = ReactMapBoxGl({
-    accessToken: Token.mapbox
-});
+mapboxgl.accessToken = token.mapbox;
 
-const MapBox = (props) => {
-    return(
-        <div className='Map'>
-            <Map style='mapbox://styles/mapbox/streets-v10' containerStyle={{height: '800px', width: '100%'}} center={[-81.37923649999999, 28.5383355]} zoom={[11]}>
-                <ZoomControl/>
-                    <Layer type='symbol' id='marker' layout={{ 'icon-image': 'bus-15' }}>
-                        {props.busstops}
-                    </Layer>
-                    <Layer type='line'>
-                        {props.busroutes}
-                    </Layer>
-            </Map>
-        </div>
-    );
+class Map extends Component{
+    componentDidMount(){
+        const map = new mapboxgl.Map({
+            container: this.mapContainer,
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: this.props.lnglat,
+            zoom: this.props.zoom
+        })
+        .addControl(new mapboxgl.NavigationControl())
+        .on('load', () =>{
+            this.generateLayers(map);
+        })
+        .on('move', () =>{
+            let coord = map.getCenter();
+            this.setState({
+                lnglat: [coord.lng, coord.lat]
+            });
+        })
+        .on('zoom', () =>{
+            this.setState({
+                zoom: map.getZoom()
+            });
+        });
+    }
+
+    generateLayers(map){
+        map.addSource('route13', {type: 'geojson',data: route13 })
+        .addLayer({
+                'id': 'stops',
+                'type': 'symbol',
+                'source': 'route13',
+                "layout": {
+                    "icon-image": "bus-15"
+                }
+        })
+        .addLayer({
+                'id': 'routes',
+                'type': 'line',
+                'source': 'route13',
+                "layout": {
+                    "line-join": "round",
+                    "line-cap": "round"
+                },
+                "paint": {
+                    "line-color": "#FF0000",
+                    "line-width": 2
+                }
+        });
+    }
+
+    render(){
+        return <div className='Map' ref={el => this.mapContainer = el}/>;
+    }
 }
 
-export default MapBox;
+export default Map;
