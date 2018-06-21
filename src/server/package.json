@@ -1,0 +1,29 @@
+{
+  "name": "orlando-shuttle-api",
+  "version": "0.1.0",
+  "description": "The API for the Orlando shuttle bus map",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinMech/orlando-shuttle-map.git"
+  },
+  "keywords": [
+    "Orlando",
+    "shuttle",
+    "bus",
+    "map",
+    "api"
+  ],
+  "author": "kevinmech",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinMech/orlando-shuttle-map/issues"
+  },
+  "homepage": "https://github.com/KevinMech/orlando-shuttle-map#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
