@@ -18,6 +18,6 @@ app.get('/', (req, res) => {
 let dbsuccess = db.connect()
 .then((dbsuccess)=>{
     if(dbsuccess) app.listen(port, () => {
-        console.log(`now listening on port ${port}...`);
+        console.log(`Now listening on port ${port}...`);
     });
 });
