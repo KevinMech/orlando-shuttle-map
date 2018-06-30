@@ -11,13 +11,16 @@ app.use('/api', apiroutes);
 
 app.get('/', (req, res) => {
     console.log(`Get requested for ${req.path} from ${req.ip}!`);
-    res.send('Welcome!');
+    res.send('Welcome! This is under construction at the moment.');
 });
 
 //Connect to database, then start listening for connections if successful
 let dbsuccess = db.connect()
 .then((dbsuccess)=>{
-    if(dbsuccess) app.listen(port, () => {
-        console.log(`Now listening on port ${port}...`);
-    });
+    if(dbsuccess){
+        db.generate();
+        app.listen(port, () => {
+            console.log(`Now listening on port ${port}...`);
+        });
+    }
 });
