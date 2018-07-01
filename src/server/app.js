@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
+const {promisify} = require('util');
 const apiroutes = require('./routes/api');
 const db = require('./lib/db.js');
 const config = require('./config.json');
@@ -18,9 +20,28 @@ app.get('/', (req, res) => {
 let dbsuccess = db.connect()
 .then((dbsuccess)=>{
     if(dbsuccess){
-        db.generate();
+        poppulate();
         app.listen(port, () => {
             console.log(`Now listening on port ${port}...`);
         });
     }
 });
+
+//Write geojson files to database
+async function poppulate(){
+    const directory = './geojson';
+    const readdir = promisify(fs.readdir)
+    try{
+        console.log('Poppulating database with geo data...');
+        let files = await readdir(directory);
+        files.forEach(file =>{
+            console.log(`Reading ${file}...`)
+            db.addBusRoute(file);
+        });
+        console.log('Poppulation complete!');
+    }
+    catch(err){
+        console.log('Failed to Read Directory!');
+        console.log(err);
+    }
+}

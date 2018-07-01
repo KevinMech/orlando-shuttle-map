@@ -1,15 +1,17 @@
-const fs = require('fs');
 const {Client} = require('pg');
 
 const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
+    user: 'kevin',
+    host: 'localhost',
+    database: 'bus',
+    port: '5432'
 });
 
 exports.connect = async() =>{
     try {
-        await client.connect();
-        console.log('Connected to database successfully!');
+        client.connect(() =>{
+            console.log('Connected to database successfully!');
+        });
         return true;
     } catch (err) {
         console.log('Error connecting to database!');
@@ -18,19 +20,12 @@ exports.connect = async() =>{
     }
 }
 
-exports.generate = async() =>{
-    const directory = './geojson';
-    console.log('Reading directory...');
+exports.addBusRoute = async(name) =>{
     try{
-        await fs.readdir(directory, (err, files)=>{
-            files.forEach(file =>{
-                //Insert information from file
-                client.query(`INSERT INTO bus(name) VALUES (${file})`);
-            })
-        });
+        client.query(`INSERT INTO bus(name) VALUES('${name}')`);
     }
     catch(err){
-        console.log(`Could not insert files from ${directory} into database!`);
+        console.log('Failed to add bus route to database!');
         console.log(err);
     }
 }
