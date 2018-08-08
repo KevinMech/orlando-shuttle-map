@@ -7,18 +7,17 @@ const client = new Client({
     port: '5432',
 });
 
-exports.connect = async () => {
+exports.connect = () => new Promise((resolve, reject) => {
     try {
-        await client.connect(() => {
+        client.connect(() => {
             console.log('Connected to database successfully!');
+            resolve(true);
         });
-        return true;
     } catch (err) {
         console.log('Error connecting to database!');
-        console.log(err);
-        return false;
+        reject(err);
     }
-};
+});
 
 exports.addBusRoute = async (name) => {
     try {
