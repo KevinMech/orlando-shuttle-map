@@ -19,11 +19,10 @@ exports.connect = () => new Promise((resolve, reject) => {
     }
 });
 
-exports.addBusRoute = async (name) => {
+exports.addBusRoute = (name, hash) => new Promise((resolve, reject) => {
     try {
-        client.query(`INSERT INTO bus(name) VALUES('${name}')`);
+        client.query(`INSERT INTO bus(name, hash) VALUES('${name}, ${hash}')`);
     } catch (err) {
-        console.log('Failed to add bus route to database!');
-        console.log(err);
+        reject(err);
     }
-};
+});
