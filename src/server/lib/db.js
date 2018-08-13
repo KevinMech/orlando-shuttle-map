@@ -10,7 +10,12 @@ const client = new Client({
     port: '5432',
 });
 
-function hashFiles(file, directory) {
+function File(name, hash) {
+    this.name = name;
+    this.hash = hash;
+}
+
+function hashFile(file, directory) {
     return new Promise((resolve, reject) => {
         try {
             const hash = crypto.createHash('md5');
@@ -19,10 +24,29 @@ function hashFiles(file, directory) {
             const stream = fs.createReadStream(directory + file).on('end', () => {
                 hash.end();
                 hashed = hash.read();
-                console.log(`hash: ${hashed}`);
-                resolve([file, hashed]);
+                const fileobj = new File(file, hashed);
+                console.log(`hashed ${fileobj.name}: ${fileobj.hash}`);
+                resolve(fileobj);
             });
             stream.pipe(hash);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+function hashFiles(files, directory) {
+    return new Promise((resolve, reject) => {
+        try {
+            const promises = [];
+            files.forEach((file) => {
+                console.log(`Hashing ${file}...`);
+                promises.push(hashFile(file, directory));
+            });
+            Promise.all(promises).then((result) => {
+                console.log('hashing complete!');
+                resolve(result);
+            });
         } catch (err) {
             reject(err);
         }
@@ -32,6 +56,7 @@ function hashFiles(file, directory) {
 function addBusRoute(name, hash) {
     return new Promise((resolve, reject) => {
         try {
+            console.log('Poppulating database with geo data...');
             client.query(`INSERT INTO bus(name, hash) VALUES('${name}, ${hash}')`);
         } catch (err) {
             reject(err);
@@ -55,22 +80,13 @@ exports.connect = () => new Promise((resolve, reject) => {
 exports.poppulate = () => new Promise(async (resolve, reject) => {
     const directory = './geojson/';
     const readdir = promisify(fs.readdir);
-    const promises = [];
     try {
-        console.log('Poppulating database with geo data...');
+        console.log('Reading Files from directory...');
         const files = await readdir(directory);
-        for (const file of files) {
-            console.log(`Reading ${file}...`);
-            promises.push(hashFiles(file, directory));
-        }
+        await hashFiles(files, directory);
+        resolve(true);
     } catch (err) {
         console.log('Failed to Read Directory!');
         reject(err);
     }
-    Promise.all(promises).then((results) => {
-        console.log(`${results}`);
-        console.log('Poppulation complete!');
-        // db.addBusRoute(file);
-        resolve(true);
-    });
 });
