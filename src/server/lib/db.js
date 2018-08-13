@@ -4,10 +4,8 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 
 const client = new Client({
-    user: 'kevin',
-    host: 'localhost',
-    database: 'bus',
-    port: '5432',
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
 });
 
 function File(name, hash) {
@@ -53,11 +51,14 @@ function hashFiles(files, directory) {
     });
 }
 
-function addBusRoute(name, hash) {
+function addBusRoutes(files) {
     return new Promise((resolve, reject) => {
         try {
             console.log('Poppulating database with geo data...');
-            client.query(`INSERT INTO bus(name, hash) VALUES('${name}, ${hash}')`);
+            files.forEach((file) => {
+                console.log(`Added ${file.name} to the database!`);
+                client.query(`INSERT INTO bus(name, hash) VALUES('${file.name}, ${file.hash}')`);
+            });
         } catch (err) {
             reject(err);
         }
@@ -83,7 +84,8 @@ exports.poppulate = () => new Promise(async (resolve, reject) => {
     try {
         console.log('Reading Files from directory...');
         const files = await readdir(directory);
-        await hashFiles(files, directory);
+        const hashedfiles = await hashFiles(files, directory);
+        addBusRoutes(hashedfiles);
         resolve(true);
     } catch (err) {
         console.log('Failed to Read Directory!');
