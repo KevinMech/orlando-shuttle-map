@@ -80,12 +80,12 @@ exports.connect = () => new Promise((resolve, reject) => {
 // Write geojson files to database
 exports.poppulate = () => new Promise(async (resolve, reject) => {
     const directory = './geojson/';
-    const readdir = promisify(fs.readdir);
+    const readdir = await promisify(fs.readdir);
     try {
         console.log('Reading Files from directory...');
         const files = await readdir(directory);
         const hashedfiles = await hashFiles(files, directory);
-        addBusRoutes(hashedfiles);
+        await addBusRoutes(hashedfiles);
         resolve(true);
     } catch (err) {
         console.log('Failed to Read Directory!');
