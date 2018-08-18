@@ -19,7 +19,11 @@ app.get('/', (req, res) => {
 async function connectDB() {
     const dbsuccess = await db.connect();
     if (dbsuccess) {
-        await db.poppulate();
+        try {
+            await db.poppulate();
+        } catch (err) {
+            console.log(err);
+        }
         app.listen(port, () => {
             console.log(`Now listening on port ${port}...`);
         });

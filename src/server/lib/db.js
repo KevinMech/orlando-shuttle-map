@@ -57,7 +57,7 @@ function addBusRoutes(files) {
             console.log('Poppulating database with geo data...');
             files.forEach((file) => {
                 console.log(`Added ${file.name} to the database!`);
-                client.query(`INSERT INTO bus(name, hash) VALUES('${file.name}, ${file.hash}')`);
+                client.query(`INSERT INTO bus(name, hash) VALUES('${file.name}', '${file.hash}')`);
             });
         } catch (err) {
             reject(err);
