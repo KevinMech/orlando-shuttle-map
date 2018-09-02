@@ -1,46 +1,35 @@
 const { Client } = require('pg');
 const fs = require('fs');
-const crypto = require('crypto');
+const objecthash = require('object-hash');
 const { promisify } = require('util');
-const test = require('../geojson/route13.json');
 
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
 });
 
-function File(name, hash) {
-    this.name = name;
-    this.hash = hash;
-}
-
-function hashFile(file, directory) {
+function hashFile(file) {
     return new Promise((resolve) => {
-        console.log('Hashing file...');
-        const hash = crypto.createHash('md5');
-        let hashed;
-        hash.setEncoding('hex');
-        const stream = fs.createReadStream(directory + file).on('end', () => {
-            hash.end();
-            hashed = hash.read();
-            const fileobj = new File(file, hashed);
-            console.log(`hashed ${fileobj.name}: ${fileobj.hash}`);
-            resolve(fileobj);
-        });
-        stream.pipe(hash);
+        console.log('Hashing...');
+        const hash = objecthash(file, { algorithm: 'md5' });
+        file[0].properties.hash = hash;
+        console.log(`Hash: ${file[0].properties.hash}`);
+        resolve(file);
     });
 }
 
 function readFiles(filenames, directory) {
     return new Promise((resolve) => {
-        console.log('Reading Files from directory...');
+        console.log('Reading files from directory...');
         const promises = [];
         let filecntr = 0;
         filenames.forEach((filename) => {
             console.log(`Reading ${filename}...`);
-            let file = require('.' + directory + filename);
-            promises.push(hashFile(filename, directory));
+            let importfile = require(`.${directory}${filename}`);
+            let file = importfile.features;
+            promises.push(hashFile(file));
             filecntr += 1;
+            console.log(`Read ${filename} successfully!`);
         });
         Promise.all(promises).then((result) => {
             console.log(`Finished reading ${filecntr} files!`);
