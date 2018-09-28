@@ -81,15 +81,22 @@ function readFiles(filenames, directory) {
 }
 
 function addBusRoutes(files) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         console.log('Poppulating database with geo data...');
         files.forEach((file) => {
-            console.log(`Added ${file.name} to the database!`);
             try {
                 client.query(`INSERT INTO bus(name, hash) VALUES('${file.name}', '${file.hash}')`);
+                file.stops.forEach((stop) => {
+                    client.query(`INSERT INTO bus_stop(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = '${file.name}'), ${stop[0]}, ${stop[1]})`);
+                });
+                file.routes.forEach((route) => {
+                    client.query(`INSERT INTO bus_route(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = '${file.name}'), ${route[0]}, ${route[1]})`);
+                });
+                console.log(`Added ${file.name} to the database!`);
                 resolve();
             } catch (err) {
                 console.log(`Failed to add ${file.name} to database!`);
+                reject();
             }
         });
     });
