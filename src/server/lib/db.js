@@ -1,12 +1,13 @@
-const { Client } = require('pg');
+const pgp = require('pg-promise')();
 const fs = require('fs');
 const objecthash = require('object-hash');
 const { promisify } = require('util');
 
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+const cn = {
+    host: process.env.DATABASE_URL,
     ssl: true,
-});
+    poolsize: 20,
+};
 
 function FileObj(name, stops, routes) {
     this.name = name;
@@ -80,47 +81,40 @@ function readFiles(filenames, directory) {
     });
 }
 
-function addBusRoutes(files) {
+function addBusRoutes(files, db) {
     return new Promise((resolve, reject) => {
         console.log('Poppulating database with geo data...');
-        files.forEach((file) => {
+        files.forEach(async (file) => {
             try {
-                client.query(`INSERT INTO bus(name, hash) VALUES('${file.name}', '${file.hash}')`);
-                file.stops.forEach((stop) => {
-                    client.query(`INSERT INTO bus_stop(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = '${file.name}'), ${stop[0]}, ${stop[1]})`);
+                await db.none('INSERT INTO bus(name, hash) VALUES($1, $2)', [file.name, file.hash]);
+                await file.stops.forEach((stop) => {
+                    db.none('INSERT INTO bus_stop(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = $1), $2, $3)', [file.name, stop[0], stop[1]]);
                 });
-                file.routes.forEach((route) => {
-                    client.query(`INSERT INTO bus_route(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = '${file.name}'), ${route[0]}, ${route[1]})`);
+                await file.routes.forEach((route) => {
+                    db.none('INSERT INTO bus_route(bus_id, longitude, latitude) VALUES((SELECT id FROM bus WHERE name = $1, $2, $3)', [file.name, route[0], route[1]]);
                 });
                 console.log(`Added ${file.name} to the database!`);
                 resolve();
             } catch (err) {
                 console.log(`Failed to add ${file.name} to database!`);
-                reject();
+                reject(err);
             }
         });
     });
 }
 
-exports.connect = () => new Promise((resolve, reject) => {
-    try {
-        client.connect(() => {
-            console.log('Connected to database successfully!');
-            resolve(true);
-        });
-    } catch (err) {
-        console.log('Error connecting to database!');
-        reject(err);
-    }
-});
-
 // Write geojson files to database
-exports.poppulate = () => new Promise(async (resolve) => {
+exports.Poppulate = () => new Promise(async (resolve) => {
+    const db = pgp(cn);
     const directory = './geojson/';
     const readdir = await promisify(fs.readdir);
     const filenames = await readdir(directory);
     let files = await readFiles(filenames, directory);
     files = await hashFiles(files);
-    await addBusRoutes(files);
+    try {
+        await addBusRoutes(files, db);
+    } catch (err) {
+        console.log(err);
+    }
     resolve();
 });

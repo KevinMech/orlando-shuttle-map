@@ -17,13 +17,10 @@ app.get('/', (req, res) => {
 
 // Connect to database, then start listening for connections if successful
 async function connectDB() {
-    const dbsuccess = await db.connect();
-    if (dbsuccess) {
-        await db.poppulate();
-        app.listen(port, () => {
-            console.log(`Now listening on port ${port}...`);
-        });
-    }
+    await db.Poppulate();
+    app.listen(port, () => {
+        console.log(`Now listening on port ${port}...`);
+    });
 }
 
 connectDB();
