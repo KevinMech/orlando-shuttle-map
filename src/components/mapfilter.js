@@ -6,7 +6,9 @@ const MapFilter = (props) =>{
     <div className='Map-Filter'>
       <p>Filter</p>
         {props.available.map((shuttle, index) => {
-          return <p key = {shuttle.id}>{shuttle.name}</p>
+          return <div className='Filter-Item'>
+            <p key = {shuttle.id}>{shuttle.name}</p>
+          </div>
         })}
     </div>
   );

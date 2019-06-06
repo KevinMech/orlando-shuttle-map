@@ -22,7 +22,7 @@
   margin-right: 15px;
 }
 
-.Map-area {
+.Map-area { 
   display: flex;
   flex-direction: row;
   /*justify-content: space-between;*/
@@ -38,9 +38,25 @@
 }
 
 .Map-Filter{
+  display: flex;
+  flex-direction: column;
   background-color: white;
   margin-right: 15px;
   width: 400px;
   height: 800px;
   border: 2px solid #222;
+}
+
+.Filter-Item{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: 1px solid black;
+  height: 50px;
+  flex-direction: row;
+}
+
+.Filter-Item:hover{
+  background-color: #41E8BE;
+  cursor: pointer;
 }
