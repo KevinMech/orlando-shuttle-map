@@ -11,10 +11,9 @@ class App extends Component {
     this.getShuttles = this.getShuttles.bind(this);
 
     this.state = {
-      lnglat: [-81.37923649999999, 28.5383355],
+      lnglat: [-122.486052, 37.830348],
       zoom: 15,
-      availableshuttles: [],
-      shownshuttles: []
+      shuttles: [],
     }
 
     this.getShuttles();
@@ -24,13 +23,13 @@ class App extends Component {
     axios.get('https://orlando-shuttle-api.herokuapp.com/api/shuttle/')
     .then(response => {
       const shuttles = response.data;
-      let allshuttles = [{id: 0}];
+      let allshuttles = [];
       for (const shuttle in shuttles) {
         allshuttles.push(shuttles[shuttle]);
       }
       console.log(allshuttles);
       this.setState({
-        availableshuttles: allshuttles
+        shuttles: allshuttles
       });
     })
     .catch(function (error) {
@@ -42,7 +41,7 @@ class App extends Component {
     return (
       <div className="App">
         <Header/>
-        <MapArea lnglat={this.state.lnglat} zoom={this.state.zoom} available={this.state.availableshuttles} shown={this.state.shownshuttles}/>
+        <MapArea lnglat={this.state.lnglat} zoom={this.state.zoom} shuttles={this.state.shuttles} shown={this.state.shownshuttles}/>
       </div>
     );
   }
