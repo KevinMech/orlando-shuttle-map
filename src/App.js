@@ -13,7 +13,7 @@ class App extends Component {
     this.state = {
       lnglat: [-122.486052, 37.830348],
       zoom: 15,
-      shuttles: [],
+      shuttles: []
     }
 
     this.getShuttles();

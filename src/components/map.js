@@ -27,21 +27,21 @@ class Map extends Component{
       this.setState({
         zoom: map.getZoom()
       });
-    });
-  }
-
-  
-  componentDidUpdate(prevProps, prevState) {
-    // Check to see if prop is available and whether the amount of buses has changed
-    if(this.props.shuttles != null && this.props.shuttles.length != currentlayers && map != null)
+    })
+    .on('load', () =>{
+      if(this.props.shuttles != null && this.props.shuttles.length != currentlayers && map != null)
       for (const shuttle in this.props.shuttles) {
         if (this.props.shuttles.hasOwnProperty(shuttle)) {
           const element = this.props.shuttles[shuttle];
           let parsedstops = this.parseStops(element.stops)
+          let parsedroutes = this.parseRoutes(element.routes)
+          console.log(parsedroutes)
           this.addShuttleStop(element.id.toString(), element.name, parsedstops);
+          this.addShuttleRoute(element.id.toString(), element.name, parsedroutes);
           currentlayers++;
         }
       }
+    });
   }
 
   parseStops(stops){
@@ -59,9 +59,24 @@ class Map extends Component{
     return parsedstops;
   }
 
+  parseRoutes(routes){
+    let parsedroutes = []
+    for (const route in routes) {
+      let latlong = [];
+      if (routes.hasOwnProperty(route)) {
+        const element = routes[route];
+        console.log(element);
+        latlong.push(element.latitude);
+        latlong.push(element.longitude);
+        parsedroutes.push(latlong);
+      }
+    }
+    return parsedroutes;
+  }
+
   addShuttleStop(id, name, stops){
     map.addLayer({
-      "id": id,
+      "id": `${id}-stop`,
       "type": "symbol",
       "source": {
         "type": "geojson",
@@ -83,6 +98,33 @@ class Map extends Component{
         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
         "text-offset": [0, 0.6],
         "text-anchor": "top"
+      }
+    });
+  }
+
+  addShuttleRoute(id, name, routes){
+    console.log("routes:" + routes);
+    map.addLayer({
+      "id": "route",
+      "type": "line",
+      "source": {
+        "type": "geojson",
+        "data": {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": routes
+          }
+        }
+      },
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#F00",
+        "line-width": 4
       }
     });
   }
