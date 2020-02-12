@@ -105,7 +105,7 @@ class Map extends Component{
   addShuttleRoute(id, name, routes){
     console.log("routes:" + routes);
     map.addLayer({
-      "id": "route",
+      "id": `${id}-route`,
       "type": "line",
       "source": {
         "type": "geojson",
